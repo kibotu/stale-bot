@@ -61,8 +61,8 @@ def printStatsFor(branch) {
 
 task purge() {
     if (project.hasProperty("days")) {
-        purgeBranchesOlderThan(project.getProperty("args"))
+        purgeBranchesOlderThan(project.getProperty("days"))
     } else if (project.hasProperty("days")) {
-        purgeBranchesOlderThan(System.getProperty("args"))
+        purgeBranchesOlderThan(System.getProperty("days"))
     }
 }
