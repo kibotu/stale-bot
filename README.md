@@ -1,4 +1,4 @@
-#Stale-Bot
+# Stale-Bot
 
 Tags and removes branches older than `x` days.
 
