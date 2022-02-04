@@ -6,5 +6,5 @@ Tags and removes branches older than `x` days.
 
 
 ```sh
-./gradlew purge -Ddays=4
+./gradlew purge -Ddays=56
 ```
