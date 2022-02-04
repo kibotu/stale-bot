@@ -1,0 +1,68 @@
+import java.text.SimpleDateFormat
+
+def purgeBranchesOlderThan(days) {
+
+    // checkout master
+    "git checkout master".execute()
+
+    // get all branches
+    def branches = "git branch -r".execute().text.split("\n")
+
+    println("\nStale Branches (older than $days days)\n")
+
+    // run through all branches
+    for (branch in branches) {
+
+        // remove white spaces at the edges
+        branch = branch.trim()
+
+        // ignore master
+        if (branch.contains("master")) continue
+
+        // figure out if there are any commits ahead master since x days
+        def logs = "git log master..$branch --pretty=oneline --since=${days}.days.ago --stat".execute().text
+
+        // tag and remove branches where there were no commits since x days
+        if (logs.isEmpty()) {
+
+            printStatsFor(branch)
+            tag(branch)
+            close(branch)
+        }
+    }
+}
+
+static def tag(branch) {
+    branch = branch.replace("origin/", "")
+    "git tag stale/$branch".execute().text
+}
+
+static def close(branch) {
+    "git branch -D $branch".execute().text
+}
+
+def printStatsFor(branch) {
+
+    // 2022-01-30 14:45:33 +0100
+    def dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z")
+
+    def lastCommit = "git log master..$branch -1 --format=%ai".execute().text.trim()
+
+    if (lastCommit == "") return
+
+    def commitDate = dateFormatter.parse(lastCommit)
+    def duration = groovy.time.TimeCategory.minus(new Date(), commitDate)
+
+    def behind = "git rev-list $branch..master".execute().text.split('\n').size()
+    def ahead = "git rev-list master..$branch".execute().text.split('\n').size()
+
+    println("Last commit before $duration | Ahead: $ahead | Behind: $behind | `$branch`")
+}
+
+task purge() {
+    if (project.hasProperty("days")) {
+        purgeBranchesOlderThan(project.getProperty("args"))
+    } else if (project.hasProperty("days")) {
+        purgeBranchesOlderThan(System.getProperty("args"))
+    }
+}
