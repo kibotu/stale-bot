@@ -5,16 +5,22 @@ Tags and removes branches older than `x` days.
 ### How to use
 
 ```sh
-./gradlew purge -Ddays=56 -DupdateRemote=false
+./gradlew purge
 ```
 
 ### Options
 
-Either via `gradle.properties` or via gradle command line arguments
+Either via `gradle.properties`
 
 ```groovy
-# default 12 weeks
+# a branch is stale after x days
 days=78
-# updates remote, pushing tags and deleting stale branches
+# updates remote, pushing tags and deleting stale branches, default true
 updateRemote=true
+```
+
+ or via gradle command line arguments
+
+```sh
+./gradlew purge -Ddays=78 -DupdateRemote=false
 ```
