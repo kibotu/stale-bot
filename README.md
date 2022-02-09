@@ -27,7 +27,7 @@ updateRemote=true
 ./gradlew purge -Ddays=78 -DupdateRemote=false
 ```
 
-[![Screenshot](screenshot.png)](screenshot.png)
+[![Screenshot](Screenshot.png)](Screenshot.png)
 
 ### License
 <pre>
