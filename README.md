@@ -29,6 +29,11 @@ updateRemote=true
 
 [![Screenshot](Screenshot.png)](Screenshot.png)
 
+## Contributors
+
+- [Jan Rabe](https://kibotu.net)
+- [Yasar Naci Gündüz](https://github.com/ColdTea-Projects)
+
 ### License
 <pre>
 Copyright 2022 Jan Rabe
