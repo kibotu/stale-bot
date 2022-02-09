@@ -8,6 +8,8 @@ Tags and removes branches older than `x` days.
 ./gradlew purge
 ```
 
+Note: It's ignoring master and develop branch by default.
+
 ### Options
 
 Either via `gradle.properties`

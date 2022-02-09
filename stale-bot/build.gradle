@@ -2,11 +2,24 @@ import java.text.SimpleDateFormat
 
 def purgeBranchesOlderThan(days) {
 
+    println("Trying to purge branches that are older than `$days`. Updating remote: `${updateRemote()}`")
+
+    "git config core.sparsecheckout false".execute()
+
+    // fetch on CI
+    "git config core.sparsecheckout false".execute()
+
     // checkout master
     "git checkout master".execute()
+    "git pull".execute()
 
     // get all branches
     def branches = "git branch -r".execute().text.split("\n")
+
+    println("branches $branches")
+    for (branch in branches) {
+        println("branches $branch")
+    }
 
     println("\nStale Branches (older than $days days)\n")
 
@@ -16,8 +29,9 @@ def purgeBranchesOlderThan(days) {
         // remove white spaces at the edges
         branch = branch.trim()
 
-        // ignore master
+        // ignore master and develop
         if (branch.contains("master")) continue
+        if (branch.contains("develop")) continue
 
         // figure out if there are any commits ahead master since x days
         def logs = "git log master..$branch --pretty=oneline --since=${days}.days.ago --stat".execute().text
@@ -26,37 +40,39 @@ def purgeBranchesOlderThan(days) {
         if (logs.isEmpty()) {
 
             printStatsFor(branch)
-            tag(branch)
-            close(branch)
+
+            def remote = updateRemote()
+            tag(branch, remote)
+            close(branch, remote)
         }
     }
 }
 
-def tag(branch) {
+static def tag(branch, updateRemote) {
     branch = branch.replace("origin/", "")
 
     // tag
     "git tag stale/$branch".execute().text
 
-    if (!updateRemote()) return
+    if (!updateRemote) return
 
     // push to origin
     "git push origin stale/$branch".execute()
 }
 
-def close(branch) {
+static def close(branch, updateRemote) {
     branch = branch.replace("origin/", "")
 
-    if (!updateRemote()) return
+    if (!updateRemote) return
 
     "git push origin --delete $branch".execute()
 }
 
 def days() {
-    if (project.hasProperty("days")) {
-        return project.getProperty("days")
-    } else if (project.hasProperty("days")) {
+    if (System.hasProperty("days")) {
         return System.getProperty("days")
+    } else if (project.hasProperty("days")) {
+        return project.getProperty("days")
     } else {
         // everything higher than ~ 1643384300 will cause overflow
         return 1600000000
@@ -64,10 +80,10 @@ def days() {
 }
 
 def updateRemote() {
-    if (project.hasProperty("updateRemote")) {
-        return project.getProperty("updateRemote") == "true"
-    } else if (project.hasProperty("updateRemote")) {
+    if (System.hasProperty("updateRemote")) {
         return System.getProperty("updateRemote") == "true"
+    } else if (project.hasProperty("updateRemote")) {
+        return project.getProperty("updateRemote") == "true"
     } else {
         return false
     }
@@ -92,5 +108,7 @@ def printStatsFor(branch) {
 }
 
 task purge() {
-    purgeBranchesOlderThan(days())
+    doLast {
+        purgeBranchesOlderThan(days())
+    }
 }
