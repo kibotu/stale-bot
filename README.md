@@ -5,7 +5,7 @@ Tags and removes branches older than `x` days.
 ### Support
 [Jenkins](stale-bot/Jenkinsfile.groovy)
 
-[Gradle Module](stale-bot/build.groovy)
+[Gradle Module](stale-bot/build.gradle)
 
 ### How to use
 
