@@ -21,7 +21,7 @@ Either via `gradle.properties`
 
 ```groovy
 # a branch is stale after x days
-days=78
+days=35
 # updates remote, pushing tags and deleting stale branches, default true
 updateRemote=true
 ```
@@ -29,7 +29,7 @@ updateRemote=true
  or via gradle command line arguments
 
 ```sh
-./gradlew purge -Ddays=78 -DupdateRemote=false
+./gradlew purge -Ddays=35 -DupdateRemote=true
 ```
 
 [![Screenshot](Screenshot.png)](Screenshot.png)
