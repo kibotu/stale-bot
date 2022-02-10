@@ -98,4 +98,15 @@ def printStatsFor(branch) {
     println("Last commit before $duration | Ahead: $ahead | Behind: $behind | `$branch`")
 }
 
+def isPublicBranch() {
+
+    switch ("${GIT_BRANCH}") {
+        case ~/^(develop)$/:
+        case ~/^(master)$/:
+            return true
+    }
+
+    return false
+}
+
 return this
